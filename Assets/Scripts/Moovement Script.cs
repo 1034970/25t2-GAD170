@@ -42,6 +42,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        
+        
         // If the variable "controller" is empty...
         if (controller == null)
         {
@@ -52,7 +54,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        if (Paused == false) {
             // These lines let the script rotate the player based on the mouse moving
             MouseZ += speedH * Input.GetAxis("Mouse X");
             MouseX -= speedV * Input.GetAxis("Mouse Y");
@@ -87,6 +88,6 @@ public class PlayerMovement : MonoBehaviour
 
             // Finally, it applies that vector it just made to the character
             controller.Move(move * speed * Time.deltaTime + velocity * Time.deltaTime); 
-        }
+  
     }
 }
