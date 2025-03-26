@@ -12,9 +12,9 @@ public class QuitButton : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public void PressedButton()
     {
-        
+        PlayerQuit = true;
     }
 
     public void ExitGame()

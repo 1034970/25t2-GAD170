@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
@@ -19,6 +20,8 @@ public class PlayerMovement : MonoBehaviour
     public float MouseX = 0.0f;
     public float MouseZ = 0.0f;
     public float MouseY = 0.0f;
+    public bool Paused = true;
+
 
     // This must be linked to the object that has the "Character Controller" in the inspector. You may need to add this component to the object
     public CharacterController controller;
@@ -49,39 +52,41 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        // These lines let the script rotate the player based on the mouse moving
-        MouseZ += speedH * Input.GetAxis("Mouse X");
-        MouseX -= speedV * Input.GetAxis("Mouse Y");
-        MouseY += speed * Input.GetAxis("Mouse Y");
+        if (Paused == false) {
+            // These lines let the script rotate the player based on the mouse moving
+            MouseZ += speedH * Input.GetAxis("Mouse X");
+            MouseX -= speedV * Input.GetAxis("Mouse Y");
+            MouseY += speed * Input.GetAxis("Mouse Y");
 
-        // Get the Left/Right and Forward/Back values of the input being used (WASD, Joystick etc.)
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
+            // Get the Left/Right and Forward/Back values of the input being used (WASD, Joystick etc.)
+            float x = Input.GetAxis("Horizontal");
+            float z = Input.GetAxis("Vertical");
 
-        // Let the player jump if they are on the ground and they press the jump button
-        if (Input.GetButtonDown("Jump") && isGrounded)
-        {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
+            // Let the player jump if they are on the ground and they press the jump button
+            if (Input.GetButtonDown("Jump") && isGrounded)
+            {
+                velocity.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
+            }
+
+            // Rotate the player based off those mouse values we collected earlier
+            transform.eulerAngles = new Vector3(MouseX, MouseZ, 0.0f);
+
+            // This is stealing the data about the player being on the ground from the character controller
+            isGrounded = controller.isGrounded;
+
+            if (isGrounded && velocity.y < 0)
+            {
+                velocity.y = -2f;
+            }
+
+            // This fakes gravity!
+            velocity.y += gravity * Time.deltaTime;
+
+            // This takes the Left/Right and Forward/Back values to build a vector
+            Vector3 move = transform.right * x + transform.forward * z;
+
+            // Finally, it applies that vector it just made to the character
+            controller.Move(move * speed * Time.deltaTime + velocity * Time.deltaTime); 
         }
-
-        // Rotate the player based off those mouse values we collected earlier
-        transform.eulerAngles = new Vector3(MouseX, MouseZ, 0.0f);
-
-        // This is stealing the data about the player being on the ground from the character controller
-        isGrounded = controller.isGrounded;
-
-        if (isGrounded && velocity.y < 0)
-        {
-            velocity.y = -2f;
-        }
-
-        // This fakes gravity!
-        velocity.y += gravity * Time.deltaTime;
-
-        // This takes the Left/Right and Forward/Back values to build a vector
-        Vector3 move = transform.right * x + transform.forward * z;
-
-        // Finally, it applies that vector it just made to the character
-        controller.Move(move * speed * Time.deltaTime + velocity * Time.deltaTime);
     }
 }

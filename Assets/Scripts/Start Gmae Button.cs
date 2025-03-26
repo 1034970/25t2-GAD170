@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class StartGmaeButton : MonoBehaviour
 {
+    public bool Paused = true;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -9,12 +11,8 @@ public class StartGmaeButton : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public void PressedButton()
     {
-        void QuitGame()
-        {
-            Application.Quit();
-            Debug.Log("Game is exiting");
-        }
+        Paused = false;
     }
 }
